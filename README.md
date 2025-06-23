@@ -1,3 +1,7 @@
+# Master Thesis
+
+This project is a modified fork of TorFS for use in my master's thesis about Sybil Attacks on the Tor Network.
+
 # Tor Flow Simulator (TorFS)
 
 The Tor Flow Simulator (TorFS) enables the experimentation with user flows
