@@ -1,6 +1,6 @@
 //! Creation and handling of adversaries
 
-use std::net::IpAddr;
+use std::net::{IpAddr, Ipv4Addr};
 
 #[allow(unused_imports)]
 use log::{debug, info, trace, warn};
@@ -80,7 +80,15 @@ impl Adversary {
 fn make_adversarial_guard(index: u64, weight: u64) -> (Relay, Descriptor) {
     let nickname = format!("BadGuyGuard{}", index);
     let fingerprint = Fingerprint::from_str_hex(format!("{:0>40}", index)).unwrap();
-    let ip_address: IpAddr = format!("10.{}.0.1", index).parse().unwrap();
+
+    // Make unique IPv4 adress
+    let octet4 = (index % 256) as u8;
+    let octet3 = ((index / 256) % 256) as u8;
+    let octet2 = ((index / (256 * 256)) % 256) as u8;
+    let octet1 = ((index / (256 * 256 * 256)) % 256) as u8;
+
+    //let ip_address: IpAddr = format!("10.{}.0.1", index).parse().unwrap();
+    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4).parse().unwrap();
 
     let relay = Relay {
         nickname: Some(nickname.clone()),
@@ -127,7 +135,16 @@ fn make_adversarial_guard(index: u64, weight: u64) -> (Relay, Descriptor) {
 fn make_adversarial_exit(index: u64, ip_offset: u64, weight: u64) -> (Relay, Descriptor) {
     let nickname = format!("BadGuyExit{}", index);
     let fingerprint = Fingerprint::from_str_hex(format!("{:F>40}", index)).unwrap();
-    let ip_address: IpAddr = format!("10.{}.0.1", ip_offset + index).parse().unwrap();
+
+    // Make unique IPv4 adress
+    let effective_index : u64 = ip_offset + index;
+    let octet4 = (effective_index % 256) as u8;
+    let octet3 = ((effective_index / 256) % 256) as u8;
+    let octet2 = ((effective_index / (256 * 256)) % 256) as u8;
+    let octet1 = ((effective_index / (256 * 256 * 256)) % 256) as u8;
+
+    //let ip_address: IpAddr = format!("10.{}.0.1", index).parse().unwrap();
+    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4).parse().unwrap();
 
     let relay = Relay {
         nickname: Some(nickname.clone()),

@@ -72,6 +72,7 @@ impl SimulationObserver {
                 format_with_adv(&circuit_event.circuit.exit),
             );
         }
+
     }
 }
 
@@ -214,10 +215,8 @@ impl Eq for CircuitClosedEvent {}
 /// An observer object used by a single client to collect their events (locally).
 pub(crate) struct ClientObserver {
     client_id: u64,
-    #[allow(unused)]
     events_new_circuit: Vec<NewCircuitEvent>,
     events_circuit_used: Vec<CircuitUsedEvent>,
-    #[allow(unused)]
     events_circuit_closed: Vec<CircuitClosedEvent>,
 }
 
@@ -237,7 +236,7 @@ impl ClientObserver {
         &mut self,
         time: DateTime<Utc>,
         circuit: &TorCircuit,
-        _port: u16,
+        port: u16,
         reason: String,
     ) {
         trace!(
@@ -250,12 +249,12 @@ impl ClientObserver {
             reason,
         );
 
-        // self.events_new_circuit.push(NewCircuitEvent {
-        //     time,
-        //     client_id: self.client_id,
-        //     circuit: circuit.clone(),
-        //     port,
-        // });
+        self.events_new_circuit.push(NewCircuitEvent {
+             time,
+             client_id: self.client_id,
+             circuit: circuit.clone(),
+             port,
+         });
     }
 
     /// Notify the observer that a circuit was used to carry a new stream
@@ -276,12 +275,12 @@ impl ClientObserver {
             circuit.exit,
         );
 
-        // self.events_circuit_used.push(CircuitUsedEvent {
-        //     time: request.time.clone(),
-        //     client_id: self.client_id,
-        //     circuit: circuit.into(),
-        //     request: request.clone(),
-        // });
+         self.events_circuit_used.push(CircuitUsedEvent {
+             time: request.time.clone(),
+             client_id: self.client_id,
+             circuit: circuit.into(),
+             request: request.clone(),
+         });
         let exit_id = exit_ids.get(&circuit.exit).expect(
             format!(
                 "Observer got an exit fingerprint that has no ID assigned: {}",
@@ -312,12 +311,12 @@ impl ClientObserver {
             circuit.exit,
         );
 
-        // self.events_circuit_closed.push(CircuitClosedEvent {
-        //     time: time.clone(),
-        //     client_id: self.client_id,
-        //     circuit: circuit.into(),
-        //     reason,
-        // });
+         self.events_circuit_closed.push(CircuitClosedEvent {
+             time: time.clone(),
+             client_id: self.client_id,
+             circuit: circuit.into(),
+             reason,
+         });
     }
 
     pub(crate) fn notify_new_need(&mut self, time: &DateTime<Utc>, need: String) {

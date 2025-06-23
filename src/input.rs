@@ -133,9 +133,9 @@ impl ConsensusHandle {
         };
 
         let descriptors = consensus
-            .retrieve_descriptors(&self.path)
-            .map_err(|_| anyhow::anyhow!("Error combining documents"))?; // TODO
+            .retrieve_descriptors(&self.path);
+            //.map_err(|_| anyhow::anyhow!("Error combining documents", ))?; // TODO
 
-        Ok((consensus, descriptors))
+        Ok((consensus, descriptors?))
     }
 }
