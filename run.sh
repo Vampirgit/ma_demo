@@ -1,14 +1,33 @@
 #!bin/bash
-echo "Starting torfs..."
-RUST_LOG=TRACE cargo run -- \
-	--tor-data tor-data \
-	--from 2025-04-25:10:00 \
-	--to 2025-04-25:11:00 \
-	--stream-model stream_model.json \
-	--packet-model packet_model.json \
-	--output-trace output/output.txt \
-	--load-scale 0.0001 \
-	--adv-guards-num 3000 \
-	--adv-guards-bw 50000 \
-	--adv-exits-num 3000 \
-	--adv-exits-bw 50000
+
+# Create output directory if it doesn't exist
+mkdir -p output
+
+# Generate timestamp for the output file
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+OUTPUT_FILE="output/trace_${TIMESTAMP}.txt"
+SUMMARY_FILE="output/summary_${TIMESTAMP}.txt"
+
+echo "Starting torfs with output to ${OUTPUT_FILE}..."
+
+# Run the command and pipe stdout to the output file
+RUST_LOG=INFO cargo run -- \
+    --tor-data tor-data \
+    --from 2025-04-25:10:00 \
+    --to 2025-04-25:11:00 \
+    --stream-model stream_model.json \
+    --packet-model packet_model.json \
+    --output-trace output/output.txt \
+    --load-scale 0.001 \
+    --adv-guards-num 300 \
+    --adv-guards-bw 20000 \
+    --adv-exits-num 300 \
+    --adv-exits-bw 20000 > "$OUTPUT_FILE" 2>&1
+
+echo "Execution complete. Output saved to ${OUTPUT_FILE}"
+echo "Generating summary statistics..."
+
+# Call the Python analysis script
+python3 create_statistics.py "$OUTPUT_FILE" "$SUMMARY_FILE"
+
+echo "Summary statistics saved to ${SUMMARY_FILE}"

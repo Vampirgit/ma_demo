@@ -7,6 +7,7 @@ use log::{debug, info, trace, warn};
 use rayon::prelude::*;
 
 use tor_circuit_generator::CircuitGenerator;
+use tordoc::consensus::Flag;
 
 use crate::adversaries::Adversary;
 use crate::cli::Cli;
@@ -130,6 +131,38 @@ impl Simulator {
 
             // Apply adversarial changes
             adversary.modify_consensus(&mut consensus, &mut descriptors);
+
+            let num_valid_running_guards = consensus
+                .relays
+                .iter()
+                .filter(|relay| {
+                    relay.flags.as_ref().map_or(false, |flags| {
+                        flags.contains(&Flag::Guard)
+                            && flags.contains(&Flag::Valid)
+                            && flags.contains(&Flag::Running)
+                    })
+                })
+                .count();
+
+            let num_valid_running_exits = consensus
+                .relays
+                .iter()
+                .filter(|relay| {
+                    relay.flags.as_ref().map_or(false, |flags| {
+                        flags.contains(&Flag::Exit)
+                            && flags.contains(&Flag::Valid)
+                            && flags.contains(&Flag::Running)
+                    })
+                })
+                .count();
+
+            // Print total relays number
+            info!(
+                "Total relays in consensus: {}, Valid/Running Guards: {}, Valid/Running Exits: {}",
+                consensus.relays.len(),
+                num_valid_running_guards,
+                num_valid_running_exits
+            );
 
             let circgen = CircuitGenerator::new(&consensus, descriptors, vec![443, 80, 22])
                 .map_err(|e| anyhow::anyhow!(e))

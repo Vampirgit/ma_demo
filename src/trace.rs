@@ -171,7 +171,8 @@ impl TraceWorker {
             // let s = String::from_utf8_lossy(&data[..]);
             // info!("Got: \"{}\"", s);
 
-            self.file_writer.write_all(&data[..])?;
+            // CUSTOM: Turn off writing to file for now
+            //self.file_writer.write_all(&data[..])?;
         }
 
         Ok(())

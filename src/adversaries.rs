@@ -68,6 +68,35 @@ impl Adversary {
         if self.extra_relays.len() > 0 {
             bwweights::recompute_bw_weights(consensus);
         }
+
+        let num_valid_running_guards = self
+            .extra_relays
+            .iter()
+            .filter(|relay| {
+                relay.0.flags.as_ref().map_or(false, |flags| {
+                    flags.contains(&Flag::Guard)
+                        && flags.contains(&Flag::Valid)
+                        && flags.contains(&Flag::Running)
+                })
+            })
+            .count();
+
+        let num_valid_running_exits = self
+            .extra_relays
+            .iter()
+            .filter(|relay| {
+                relay.0.flags.as_ref().map_or(false, |flags| {
+                    flags.contains(&Flag::Exit)
+                        && flags.contains(&Flag::Valid)
+                        && flags.contains(&Flag::Running)
+                })
+            })
+            .count();
+
+        info!(
+            "Total adversary guard relays: {}, Total adversary exit relays: {}",
+            num_valid_running_guards, num_valid_running_exits
+        );
     }
 
     /// Determine if a given fingerprint belongs to the adversary
@@ -88,7 +117,9 @@ fn make_adversarial_guard(index: u64, weight: u64) -> (Relay, Descriptor) {
     let octet1 = ((index / (256 * 256 * 256)) % 256) as u8;
 
     //let ip_address: IpAddr = format!("10.{}.0.1", index).parse().unwrap();
-    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4).parse().unwrap();
+    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4)
+        .parse()
+        .unwrap();
 
     let relay = Relay {
         nickname: Some(nickname.clone()),
@@ -137,14 +168,16 @@ fn make_adversarial_exit(index: u64, ip_offset: u64, weight: u64) -> (Relay, Des
     let fingerprint = Fingerprint::from_str_hex(format!("{:F>40}", index)).unwrap();
 
     // Make unique IPv4 adress
-    let effective_index : u64 = ip_offset + index;
+    let effective_index: u64 = ip_offset + index;
     let octet4 = (effective_index % 256) as u8;
     let octet3 = ((effective_index / 256) % 256) as u8;
     let octet2 = ((effective_index / (256 * 256)) % 256) as u8;
     let octet1 = ((effective_index / (256 * 256 * 256)) % 256) as u8;
 
     //let ip_address: IpAddr = format!("10.{}.0.1", index).parse().unwrap();
-    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4).parse().unwrap();
+    let ip_address: IpAddr = format!("{}.{}.{}.{}", octet1, octet2, octet3, octet4)
+        .parse()
+        .unwrap();
 
     let relay = Relay {
         nickname: Some(nickname.clone()),
