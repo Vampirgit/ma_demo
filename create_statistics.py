@@ -164,7 +164,7 @@ def generate_report(results, output_file=None):
         avg_adv_guards = sum(e['adv_guards'] for e in results['epoch_data']) / num_epochs
         avg_adv_exits = sum(e['adv_exits'] for e in results['epoch_data']) / num_epochs
         
-        output.append(f"Number of epochs (hours): {num_epochs}")
+        output.append(f"Number of epochs (started hours): {num_epochs}")
         output.append("\nAverage across all epochs:")
         output.append(f" - Total relays: {avg_total:.1f}")
         output.append(f" - Guard relays: {avg_guards:.1f} ({avg_guards/avg_total:.1%} of total)")
