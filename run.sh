@@ -19,10 +19,10 @@ RUST_LOG=INFO cargo run -- \
     --packet-model packet_model.json \
     --output-trace output/output.txt \
     --load-scale 1 \
-    --adv-guards-num 400 \
-    --adv-guards-bw 10000 \
-    --adv-exits-num 400 \
-    --adv-exits-bw 10000 > "$OUTPUT_FILE" 2>&1
+    --adv-guards-num 100 \
+    --adv-guards-bw 5000 \
+    --adv-exits-num 100 \
+    --adv-exits-bw 5000 > "$OUTPUT_FILE" 2>&1
 
 echo "Execution complete. Output saved to ${OUTPUT_FILE}"
 echo "Generating summary statistics..."
