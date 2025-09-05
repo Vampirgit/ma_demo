@@ -20,9 +20,9 @@ RUST_LOG=INFO cargo run -- \
     --output-trace output/output.txt \
     --load-scale 1 \
     --adv-guards-num 800 \
-    --adv-guards-bw 80000 \
+    --adv-guards-bw 10000 \
     --adv-exits-num 800 \
-    --adv-exits-bw 80000 > "$OUTPUT_FILE" 2>&1
+    --adv-exits-bw 10000 > "$OUTPUT_FILE" 2>&1
 
 echo "Execution complete. Output saved to ${OUTPUT_FILE}"
 echo "Generating summary statistics..."
