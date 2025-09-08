@@ -19,7 +19,7 @@ RUST_LOG=INFO cargo run -- \
     --packet-model packet_model.json \
     --output-trace output/output.txt \
     --load-scale 1 \
-    --adv-guards-num 100 \
+    --adv-guards-num 200 \
     --adv-guards-bw 40000 \
     --adv-exits-num 0 \
     --adv-exits-bw 40000 > "$OUTPUT_FILE" 2>&1
