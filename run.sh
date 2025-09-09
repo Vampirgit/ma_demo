@@ -21,7 +21,7 @@ RUST_LOG=INFO cargo run -- \
     --load-scale 1 \
     --adv-guards-num 0 \
     --adv-guards-bw 40000 \
-    --adv-exits-num 50 \
+    --adv-exits-num 100 \
     --adv-exits-bw 40000 > "$OUTPUT_FILE" 2>&1
 
 echo "Execution complete. Output saved to ${OUTPUT_FILE}"
