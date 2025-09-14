@@ -14,7 +14,7 @@ echo "Starting torfs with output to ${OUTPUT_FILE}..."
 RUST_LOG=INFO cargo run -- \
     --tor-data tor-data \
     --from 2025-01-25:10:00 \
-    --to 2025-01-25:13:00 \
+    --to 2025-01-25:14:00 \
     --stream-model stream_model.json \
     --packet-model packet_model.json \
     --output-trace output/output.txt \
